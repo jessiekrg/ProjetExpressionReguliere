@@ -1,0 +1,22 @@
+comment ca fonctionne :
+
+test.1 (2 regex en texte) avec nos deux er 
+        │
+        ▼
+   lex + yacc
+   → génèrent main.py
+        │
+        ▼
+   main.py
+   → fait from automate import *
+   → appelle automate("a"), union(...),
+     concatenation(...), etoile(...),
+     tout_faire(...), egal(...)
+        │
+        ▼
+   Affiche EGAL ou NON EGAL
+
+déjà on peut : 
+- définir
+- coder les fonctions (il y en 6) dans automate.py et faut écrire leur tests respectif donc on fait 3 fonctions chacune.
+- 
