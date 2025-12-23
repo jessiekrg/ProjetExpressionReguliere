@@ -16,7 +16,17 @@ test.1 (2 regex en texte) avec nos deux er
         ▼
    Affiche EGAL ou NON EGAL
 
-déjà on peut : 
+
+A|B
+
+Phase,Partenaire A (Compil),Partenaire B (Python)
+Étape 1,Créer le Lexer (regexp.l) pour les lettres et opérateurs. | ,"Coder union, concatenation et etoile."
+Étape 2,Écrire la grammaire Yacc avec les priorités. | Coder determinisation et completion.
+Étape 3,Faire en sorte que Yacc écrive le fichier main.py.| Coder la fonction egal et faire les tests.
+Final,Gérer le Makefile et le rendu ZIP.| Préparer le document PDF avec les dessins.
+
+
+
 - définir
 - coder les fonctions (il y en 6) dans automate.py et faut écrire leur tests respectif donc on fait 3 fonctions chacune.
 - 
