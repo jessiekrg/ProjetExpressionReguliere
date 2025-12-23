@@ -1,12 +1,15 @@
 ok ducoup voici ce que j'ai fais
 
 - creation de tokens.h (je me suis basée sur les consignes)
-- j'ai crée le fichier regex.l (j'ai suivi le format du cours) j'ai ajouté  des printf pour voir si ca fonctionne bien
+- j'ai crée le fichier regexp.l
+ (j'ai suivi le format du cours) j'ai ajouté  des printf pour voir si ca fonctionne bien
+ (regexp.l c'est pour reconnaitre nos caractères/symboles un par un)
+
 - j'ai testé le fichier avec les commandes en bas dans le terminal (après avoir saisi "./test_lex" teste une chaine
 ( le flex il va génerer bigass fichier c qui s'appelle lex.yy.c c'est 
 dedans qu'est définie la fonction yylex() qui lit caractère par caractère ce qu'on lui donne)
 
-flex regex.l
+flex regexp.l
 gcc lex.yy.c -o test_lex
 ./test_lex   
 
@@ -22,4 +25,10 @@ J'ai vu un point
 J'ai vu une etoile
 J'ai vu une lettre
 fin de lecture du fichier ahahahaha 
+
+
+(regexp.l c'est c'etait pour reconnaitre nos caractères/symboles)
+APRES faut faire regex.y 
+regex.y lui va lire selon l'ordre de priorité des opération genre si on a (a+b)*.c il va d'abord grouper (a+b) puis faire le *
+
 
