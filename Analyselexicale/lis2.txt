@@ -2,5 +2,4 @@ bonzouar
 
 j'ai crée le makefile
 
-on faite make ect 
-faut modifier regexp.y de sorte à générer le main.py 
+faut modifier regexp.y de sorte à générer le main.py je crois 
