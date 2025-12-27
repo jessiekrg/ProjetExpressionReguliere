@@ -69,6 +69,30 @@ class automate:
 def concatenation(a1, a2): 
     """Retourne l'automate qui reconnaît la concaténation des 
     langages reconnus par les automates a1 et a2"""
+    
+    #je déclare l'automate 
+    a = automate() 
+    a.n = a1.n + a2.n
+    a.final = []
+
+    for etat_final in a2.final :
+        a.final.append(etat_final +  a1.n)
+
+    for (etat,lettre), destination in a1.transition.items():
+        a.ajoute_transition(etat,lettre,destination) 
+    
+    for etat_final_a1 in a1.final:
+        a.ajoute_transition(etat_final,"E", [a1.n] ) #avec le décalage [a1.n] correspond à l'etat initial de a2
+
+    for (etat,lettre), destination in a2.transition.items():
+        etat_decale = etat + a1.n
+
+        destination_decale = []
+        for d in destination:
+            destination_decale.append(d + a1.n)
+        
+        a.ajoute_transition(etat_decale,lettre,destination_decale) 
+
     return a
 
 
