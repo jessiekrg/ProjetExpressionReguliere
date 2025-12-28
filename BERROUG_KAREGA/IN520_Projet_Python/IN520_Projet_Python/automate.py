@@ -105,6 +105,10 @@ def union(a1, a2):
 def etoile(a):
     """Retourne l'automate qui reconnaît l'étoile de Kleene du 
     langage reconnu par l'automate a""" 
+
+    a = automate()
+    a.final = 
+
     return a
 
 
