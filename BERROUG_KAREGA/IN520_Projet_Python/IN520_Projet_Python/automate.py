@@ -124,8 +124,9 @@ def etoile(a):
 
         a1.ajoute_transition(etat_a1, lettre , dest_a1)
 
-    #j'ajoute la transition epsilion de l'état initial qui doit etre final d'ailleurs vers l'etat inital de a
-    a1.ajoute_transition(,"E", )
+    #j'ajoute la transition epsilion de l'état initial qui vers l'etat fi de a et trans e du nouvel etat initial vers etat f
+    a1.ajoute_transition(0,"E", a1.final )
+    a1.ajoute_transition(0,"E", [1] )
 
     return a1 #je crois pas que je dois retourner le meme  a du coup j'ai changé en a1 but idk 
 
