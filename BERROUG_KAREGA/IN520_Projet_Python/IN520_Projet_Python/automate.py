@@ -126,7 +126,13 @@ def etoile(a):
 
     #j'ajoute la transition epsilion de l'état initial qui vers l'etat fi de a et trans e du nouvel etat initial vers etat f
     a1.ajoute_transition(0,"E", a1.final )
-    a1.ajoute_transition(0,"E", [1] )
+    a1.ajoute_transition(0,"E", [1] ) #ici
+
+    for etat_final_a in a.final:
+        af = etat_final_a + 1
+        a1.ajoute_transition(af, "E", a1.final)
+        a1.ajoute_transition(af, "E", [1]) #pas 0 parce sinon on peut boucler infinement sur des transion epsilon pass ouf quoi 
+
 
     return a1 #je crois pas que je dois retourner le meme  a du coup j'ai changé en a1 but idk 
 
