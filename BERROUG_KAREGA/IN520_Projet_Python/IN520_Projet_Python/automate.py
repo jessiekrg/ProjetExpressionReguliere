@@ -198,7 +198,7 @@ def determinisation(a):
     return a
     
     
-def completion(a):
+def completion(a):  #j'attends que tu fais pour faire lui je pense idk
     """ retourne l'automate a complété
         l'automate en entrée doit être déterministe
     """
