@@ -106,10 +106,22 @@ def etoile(a):
     """Retourne l'automate qui reconnaît l'étoile de Kleene du 
     langage reconnu par l'automate a""" 
 
-    a = automate()
-    a.final = 
+    a1 = automate()
 
-    return a
+    #j'ajoute le nouvel etat initial en rallongeant le le nb d'etats 
+    a1.n = a1.n + 1
+
+    #je decale tous les etats de 1 ducoup pour l'ajout de l'etat initial et ensuite je dois decaler les transition 
+    a1.final = []
+    for etat_final in a.final :
+        a1.final.append(etat_final + 1)
+    for (etat,lettre), destination in a.transition.items():
+        a1.ajoute_transition(etat+1, lettre , destination + 1)
+
+    #j'ajoute la transition 
+    ajoute_transition()
+
+    return a1 #je crois pas que je dois retourner le meme  a du coup j'ai changé en a1 but idk 
 
 
 def acces_epsilon(a):
