@@ -108,18 +108,24 @@ def etoile(a):
 
     a1 = automate()
 
-    #j'ajoute le nouvel etat initial en rallongeant le le nb d'etats 
-    a1.n = a1.n + 1
+    #j'ajoute le nouvel etat initial et un nouveau etat final en rallongeant le le nb d'etats 
+    a1.n = a.n + 2
+
+    a1.final = [a1.n - 1] #dernier etat c'est l'etat final ici 
 
     #je decale tous les etats de 1 ducoup pour l'ajout de l'etat initial et ensuite je dois decaler les transition 
-    a1.final = []
-    for etat_final in a.final :
-        a1.final.append(etat_final + 1)
     for (etat,lettre), destination in a.transition.items():
-        a1.ajoute_transition(etat+1, lettre , destination + 1)
 
-    #j'ajoute la transition 
-    ajoute_transition()
+        etat_a1 = etat + 1
+
+        dest_a1 = []
+        for d in destination:
+            dest_a1.append(d+1)
+
+        a1.ajoute_transition(etat_a1, lettre , dest_a1)
+
+    #j'ajoute la transition epsilion de l'état initial qui doit etre final d'ailleurs vers l'etat inital de a
+    a1.ajoute_transition(,"E", )
 
     return a1 #je crois pas que je dois retourner le meme  a du coup j'ai changé en a1 but idk 
 
