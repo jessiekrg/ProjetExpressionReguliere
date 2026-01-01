@@ -202,7 +202,19 @@ def completion(a):  #j'attends que tu fais pour faire lui je pense idk
     """ retourne l'automate a complété
         l'automate en entrée doit être déterministe
     """
-    return a
+
+    a1 = automate()
+
+    a1.n = a.n + 1 #ajout de l'etat poubelle
+
+    
+
+
+    #je dois decaler les transition par rapport au a1 de meme avec les tranistion
+    #pour tous les etats , pour chaquqe symbole  si une transition manque on ajoute une transition vers un etat poubelle
+
+
+    return a1
 
 
 def minimisation(a):
