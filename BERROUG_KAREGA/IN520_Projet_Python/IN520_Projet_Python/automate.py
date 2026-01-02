@@ -202,20 +202,28 @@ def completion(a):  #j'attends que tu fais pour faire lui je pense idk
     """ retourne l'automate a complété
         l'automate en entrée doit être déterministe
     """
-
+    
+    #copie de l'automate a + ajout de l'etat poubelle
     a1 = automate()
+    a1.n = a.n
+    a1.final = a.final
+    la_poubelle = a.n #a.n c'est juste la valeur du prochain etat dispo si la poubelle est necessaire 
 
-    a1.n = a.n + 1 #ajout de l'etat poubelle
-
-
-
-
-    #je dois decaler les transition par rapport au a1 de meme avec les tranistion
-    #pour tous les etats , pour chaquqe symbole  si une transition manque on ajoute une transition vers un etat poubelle
-
+    #copie des transitions d'origine 
     for (etat, lettre), destination in a.transition.items() :
+        a1.ajoute_transition(etat, lettre , destination)
 
+    for etat in range(a1.n):
+        for lettre in a1.alphabet:
+            if (etat,lettre) not in a1.transition:
+                a1.ajoute_transition(etat,lettre, [la_poubelle])
+    
+    if [la_poubelle] in a a1.transition.values():
+        a1.n = a1.n + 1 #ajout de l'etat poubelle si il est utilisé au moins 
+        for lettre in a1.alphabet:
+            a1.ajoute_transition(la_poubelle, lettre, [la_poubelle])
 
+    #pour tous les etats , pour chaquqe symbole de a1  si une transition manque on ajoute une transition vers un etat poubelle
 
 
     return a1
@@ -298,3 +306,11 @@ def egal(a1, a2):
 
 # TESTS
 # à écrire
+# --- TEST RAPIDE ---
+if __name__ == "__main__":
+    a1 = automate("a")
+    a2 = automate("b")
+
+    resultat = concatenation(a1, a2)
+
+    print(resultat)
