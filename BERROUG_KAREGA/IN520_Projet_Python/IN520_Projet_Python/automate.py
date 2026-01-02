@@ -207,11 +207,15 @@ def completion(a):  #j'attends que tu fais pour faire lui je pense idk
 
     a1.n = a.n + 1 #ajout de l'etat poubelle
 
-    
+
 
 
     #je dois decaler les transition par rapport au a1 de meme avec les tranistion
     #pour tous les etats , pour chaquqe symbole  si une transition manque on ajoute une transition vers un etat poubelle
+
+    for (etat, lettre), destination in a.transition.items() :
+
+
 
 
     return a1
