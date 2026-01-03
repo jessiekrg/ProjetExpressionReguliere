@@ -99,6 +99,41 @@ def concatenation(a1, a2):
 def union(a1, a2):
     """Retourne l'automate qui reconnaît l'union des 
     langages reconnus par les automates a1 et a2""" 
+
+    a = automate()
+    a.n = a1.n + a2.n
+    a.final = []
+
+    # on crée un nouvel état initial en 0 = tous les anciens états sont décalés de +1.
+
+    for etat_final in a1.final :
+        a.final.append(etat_final + 1)
+
+    for etat_final in a2.final :
+        a.final.append(etat_final + 1 + a1.n) # on décale la numérotation des états final de a2
+
+    # ε-transitions depuis le nouvel état initial
+    a.ajoute_transition(0, "E", [1])
+    a.ajoute_transition(0, "E", [1 + a1.n])
+
+    for (etat,lettre), destination in a1.transition.items():
+        etat = etat + 1
+
+        destination_decale = []
+        for d in destination:
+            destination_decale.append(d + 1)
+
+        a.ajoute_transition(etat,lettre,destination) 
+    
+    for (etat,lettre), destination in a2.transition.items():
+        etat_decale = etat + a1.n
+
+        destination_decale = []
+        for d in destination:
+            destination_decale.append(d + a1.n)
+        
+        a.ajoute_transition(etat_decale,lettre,destination_decale) 
+    
     return a
 
 
@@ -194,8 +229,41 @@ def determinisation(a):
     """ retourne l'automate équivalent déterministe
         la construction garantit que tous les états sont accessibles
         automate d'entrée sans epsilon-transitions
-    """        
+    """
+    a_det = automate()
+
+    transition = {}
+    supression_epsilon_transitions(a)
+
+    for (etat, lettre), destination in a.transition.items():
+        for d in destination:
+            if (etat,lettre) in transition:
+                transition[(etat,lettre)] += [d] 
+            else:
+                transition[(etat,lettre)] = [d] 
+    
+    etat_NFA =list(transition.values)
+    dfa= {}
+    numero = 0
+
+    for etat in etat_NFA:
+        clef = tuple(etat)
+        dfa[clef] = numero
+        numero += 1
+    
+    for (etat,lettre), destination in a.transition.items():
+        for i in etat_NFA:
+            if etat in i:
+                a_det.ajoute_transition(i,lettre,destination) 
+
+    
+
+
+
     return a
+
+
+
     
     
 def completion(a):  #j'attends que tu fais pour faire lui je pense idk
