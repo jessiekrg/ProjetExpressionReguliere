@@ -225,42 +225,52 @@ def supression_epsilon_transitions(a):
     return res
         
         
+
+
 def determinisation(a):
     """ retourne l'automate équivalent déterministe
         la construction garantit que tous les états sont accessibles
         automate d'entrée sans epsilon-transitions
     """
+    a_E = supression_epsilon_transitions(a)
     a_det = automate()
+    a_traiter = [frozenset({0})]  # utiliser frozenset pour pouvoir comparer et stocker
+    etats_vus = {frozenset({0})}
 
-    transition = {}
-    supression_epsilon_transitions(a)
+    while a_traiter:
+        etat = a_traiter.pop(0)
+        S_a = set()  #ensemble des états atteignables avec 'a'
+        S_b = set()  # on utilise des set pour ne pas avoir des doublon 
+        S_c = set() 
+        for (q,lettre), destination in a_E.transition.items():
+            if q in etat: # Un etat peut être composé de plusieurs état
+                if lettre == 'a':
+                    S_a.update(destination) # on .update et pas .add cardestination est une liste
+                if lettre == 'b':
+                    S_b.update(destination)
+                if lettre == 'c':
+                    S_c.update(destination)
+        # Ajout des transitions
+        a_det.ajoute_transition(etat,'a',list(S_a)) #la focntion attend à ce que dest doit une liste
+        a_det.ajoute_transition(etat,'b',list(S_b)) 
+        a_det.ajoute_transition(etat,'c',list(S_c)) 
 
-    for (etat, lettre), destination in a.transition.items():
-        for d in destination:
-            if (etat,lettre) in transition:
-                transition[(etat,lettre)] += [d] 
-            else:
-                transition[(etat,lettre)] = [d] 
+        # Rajouter les nouveaux ensemble dans a_traiter
+        for nouvel_etat in [S_a, S_b, S_c]:
+            if nouvel_etat and frozenset(nouvel_etat) not in etats_vus:
+                etats_vus.add(frozenset(nouvel_etat))
+                a_traiter.append(frozenset(nouvel_etat))
+        
+    # Definir état finaux          
+    a_det.final =[]
+    for etat in etats_vus:
+        if any(q in a_E.final for q in etat): # any renvoie TRUE si on moins un des q est final
+            a_det.final.append(etat)
     
-    etat_NFA =list(transition.values)
-    dfa= {}
-    numero = 0
+    return a_det
 
-    for etat in etat_NFA:
-        clef = tuple(etat)
-        dfa[clef] = numero
-        numero += 1
-    
-    for (etat,lettre), destination in a.transition.items():
-        for i in etat_NFA:
-            if etat in i:
-                a_det.ajoute_transition(i,lettre,destination) 
+    # prof a mis return a  idk 
 
-    
-
-
-
-    return a
 
 
 
@@ -368,6 +378,39 @@ def egal(a1, a2):
     """ retourne True si a1 et a2 sont isomorphes
         a1 et a2 doivent être minimaux
     """
+    a1_min = minimisation(a1)
+    a2_min = minimisation(a2)
+
+    # Cas de base
+    if a1_min.n != a2_min.n: 
+        return False
+    if set(a1_min.final) != set(a2_min.final): # set pour que l'odre n'a plus d'importance
+        return False
+    
+    e_1 = a1_min.initial
+    e_2 = a2_min.initial
+
+    a_traiter = [(e_1,e_2)]
+    etats_vus = []
+    while a_traiter:
+        (q1,q2) =  a_traiter.pop(0)
+        if q1 in a1_min.final and q2 not in a2_min.final:
+            return False
+        if q2 in a2_min.final and q1 not in a1_min.final:
+            return False
+        
+        for lettre in ['a','b','c']:
+            dest1 = a1_min.transition.get((q1, lettre), [])
+            dest2 = a2_min.transition.get((q2, lettre), [])
+            
+            if len(dest1) != len(dest2):
+                return False
+        
+            for s1, s2 in zip(dest1, dest2): #premier état du dest1 correspond au premier du dest2
+                if (s1,s2) not in etats_vus:
+                    etats_vus.append((s1,s2))
+                    a_traiter.append((s1,s2))
+
     return True
 
 
