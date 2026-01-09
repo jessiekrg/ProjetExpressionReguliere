@@ -82,7 +82,7 @@ def concatenation(a1, a2):
         a.ajoute_transition(etat,lettre,destination) 
     
     for etat_final_a1 in a1.final:
-        a.ajoute_transition(etat_final,"E", [a1.n] ) #avec le décalage [a1.n] correspond à l'etat initial de a2
+        a.ajoute_transition(etat_final_a1,"E", [a1.n] ) #avec le décalage [a1.n] correspond à l'etat initial de a2
 
     for (etat,lettre), destination in a2.transition.items():
         etat_decale = etat + a1.n
@@ -296,7 +296,7 @@ def completion(a):  #j'attends que tu fais pour faire lui je pense idk
             if (etat,lettre) not in a1.transition:
                 a1.ajoute_transition(etat,lettre, [la_poubelle])
     
-    if [la_poubelle] in a a1.transition.values():
+    if [la_poubelle] in a1.transition.values():
         a1.n = a1.n + 1 #ajout de l'etat poubelle si il est utilisé au moins 
         for lettre in a1.alphabet:
             a1.ajoute_transition(la_poubelle, lettre, [la_poubelle])
@@ -419,9 +419,38 @@ def egal(a1, a2):
 # à écrire
 # --- TEST RAPIDE ---
 if __name__ == "__main__":
-    a1 = automate("a")
-    a2 = automate("b")
 
-    resultat = concatenation(a1, a2)
+# Automates
+    a = automate("a")
+    b = automate("b")
+    epsilon = automate("E")
 
-    print(resultat)
+# Test : Concaténation (a.b) 
+    t1 = concatenation(a, b)
+    t2 = concatenation(a, epsilon)
+
+
+    t3 = supression_epsilon_transitions(t2)
+    #print(t1,t2,t3)
+
+
+# Test : Etoile
+
+    e1 = etoile(a)                 
+    e2 = etoile(epsilon)           
+    e3 = etoile(union(a, b))
+    #print(e1,e2,e3)
+
+# Test : Completion  
+
+    c1 = completion(b)  
+    print(b,c1)
+
+    
+
+# Test : Union (a|b)
+    
+
+
+# Test : Suppression des Epsilon 
+# Test : Déterminisation 
