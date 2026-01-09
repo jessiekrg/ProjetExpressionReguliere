@@ -423,6 +423,7 @@ if __name__ == "__main__":
     # Test : Concaténation (a.b)
 
     def test_concatenation():
+        
         # Test 1 : "a.b"
         c1 = concatenation(automate("a"), automate("b"))
 
@@ -444,6 +445,7 @@ if __name__ == "__main__":
 
     # Test : Etoile
     def test_Etoile():
+
         # Test 1 : a*
         e1 = etoile(automate("a"))
         assert e1.n == 4
@@ -454,7 +456,7 @@ if __name__ == "__main__":
 
         # Test 2 : E*
         e2 = etoile(automate("E"))
-        dernier_etat = e2.n - 1  # état final ajouté
+        dernier_etat = e2.n - 1
         assert dernier_etat in e2.final
 
         assert (0, "E") in e2.transition
