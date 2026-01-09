@@ -418,9 +418,11 @@ def egal(a1, a2):
 # TESTS
 # à écrire
 # --- TEST RAPIDE ---
+
+
 if __name__ == "__main__":
 
-    # Test : Concaténation (a.b)
+    # Test : Concaténatio
 
     def test_concatenation():
         
@@ -510,3 +512,8 @@ if __name__ == "__main__":
     test_Completion()
     test_Etoile()
     test_concatenation()
+
+
+
+    #juste
+    print(completion(automate("a")))
