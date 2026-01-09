@@ -420,37 +420,91 @@ def egal(a1, a2):
 # --- TEST RAPIDE ---
 if __name__ == "__main__":
 
-# Automates
-    a = automate("a")
-    b = automate("b")
-    epsilon = automate("E")
+    # Test : Concaténation (a.b)
 
-# Test : Concaténation (a.b) 
-    t1 = concatenation(a, b)
-    t2 = concatenation(a, epsilon)
+    def test_concatenation():
+        # Test 1 : "a.b"
+        c1 = concatenation(automate("a"), automate("b"))
 
+        assert c1.n == 4
+        assert c1.final == [3]
+        assert (0, "a") in c1.transition
+        assert (1, "E") in c1.transition
+        assert (2, "b") in c1.transition
 
-    t3 = supression_epsilon_transitions(t2)
-    #print(t1,t2,t3)
+        # Test 2 : "E.a"
+        c2 = concatenation(automate("E"), automate("a"))
+        assert c2.n == 3
+        assert c2.final == [2]
+        assert (0, "E") in c2.transition
+        assert (1, "a") in c2.transition
 
-
-# Test : Etoile
-
-    e1 = etoile(a)                 
-    e2 = etoile(epsilon)           
-    e3 = etoile(union(a, b))
-    #print(e1,e2,e3)
-
-# Test : Completion  
-
-    c1 = completion(b)  
-    print(b,c1)
-
-    
-
-# Test : Union (a|b)
-    
+        print("test_concatenation validé")
 
 
-# Test : Suppression des Epsilon 
-# Test : Déterminisation 
+    # Test : Etoile
+    def test_Etoile():
+        # Test 1 : a*
+        e1 = etoile(automate("a"))
+        assert e1.n == 4
+        assert len(e1.final) == 1
+        assert (0, "E") in e1.transition
+        for etatf_a in [1]:
+            assert (etatf_a + 1, "E") in e1.transition
+
+        # Test 2 : E*
+        e2 = etoile(automate("E"))
+        dernier_etat = e2.n - 1  # état final ajouté
+        assert dernier_etat in e2.final
+
+        assert (0, "E") in e2.transition
+        assert dernier_etat in e2.transition[(0, "E")]
+        print("test_Etoile validé")
+
+    # Test : Completion
+    def test_Completion():
+        # Test sur automate simple 'a'
+        d1 = determinisation(automate("a"))
+        c1 = completion(d1)
+        assert c1.n >= d1.n
+        for etat in range(c1.n):
+            for l in c1.alphabet:
+                assert (etat, l) in c1.transition
+
+        # Test sur union 'a+b'
+        d2 = determinisation(union(automate("a"), automate("b")))
+        c2 = completion(d2)
+        for etat in range(c2.n):
+            for l in c2.alphabet:
+                assert (etat, l) in c2.transition
+
+        print("test_Completion validé")
+
+    # Test : Union
+    def test_union():
+        # Test 1 : a + b
+        u1 = union(automate("a"), automate("b"))
+        
+        # Vérification des états finaux
+        assert len(u1.final) == 2
+        
+        # Vérification des epsilon-transitions depuis le nouvel état initial
+        assert (0, "E") in u1.transition
+        assert 1 in u1.transition[(0, "E")]
+        assert 3 in u1.transition[(0, "E")]
+
+        # Test 2 : E + b
+        u2 = union(automate("E"), automate("b"))
+        assert len(u2.final) == 2
+        assert (0, "E") in u2.transition
+        assert 1 in u2.transition[(0, "E")]
+        assert 2 in u2.transition[(0, "E")]
+
+        print("test_union validé")
+
+
+    # Exécution des tests
+    test_union()
+    test_Completion()
+    test_Etoile()
+    test_concatenation()
