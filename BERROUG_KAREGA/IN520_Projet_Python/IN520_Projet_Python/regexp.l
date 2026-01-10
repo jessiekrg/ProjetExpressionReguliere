@@ -5,11 +5,12 @@ extern YYSTYPE yylval;
 %}
 
 lettre [a-c]
-sep [ \t\n]
+sep [ \t]
 
 %%
 
 {sep} {}
+\n          { return FIN_INSTRUCTION; }
 "("          { return PAR_O; }
 ")"          { return PAR_F; }
 "+"          { return PLUS; }

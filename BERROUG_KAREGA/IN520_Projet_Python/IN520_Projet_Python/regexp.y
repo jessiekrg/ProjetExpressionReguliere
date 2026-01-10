@@ -7,6 +7,8 @@
 /* Déclaration obligatoire pour Mac/Clang */
 void yyerror(const char *s);  // pour éviter le warning
 int yylex(void);               // déclaration de la fonction lexicale
+int cpt = 0;  
+
 
 /* Définition de yyerror */
 void yyerror(const char *s) {
@@ -24,6 +26,8 @@ void yyerror(const char *s) {
 %token POINT
 
 %token <str> LTR EPSILON
+%token FIN_INSTRUCTION
+
 
 
 /* on déclare l'associativité gauche avec %left, c'est à dire qu'on commence par le gauche pour regrouper les opérations */
@@ -38,16 +42,36 @@ void yyerror(const char *s) {
 
 %type <str> expression plus_expression point_expression etoile_expression expression_primaire /* dit à Bison que ces non-terminaux utilisent le champ str de %union */ 
  
+%start programme
 
 /* GRAMMAIRE */
 
 %%
+/* Pour faire plusieurs instruction*/
+
+programme:
+      /* vide */
+    | programme instruction
+    ;
 
 instruction: 
-        expression 
+        expression FIN_INSTRUCTION
         {
-            /* $1 correspond à la valeur de l'expression (calculée par la règle 'expression'), ça peut être une lettre seule ou bien un combinaison */
-            printf("= %s\n",$1);
+        FILE *f;
+        if (cpt == 0) {
+            f = fopen("main.py", "w"); 
+            fprintf(f, "from automate import *\n");
+            fprintf(f, "a1 = %s\n", $1); 
+        } else if (cpt == 1) {
+            f = fopen("main.py", "a");   
+            fprintf(f, "a2 = %s\n", $1); 
+            fprintf(f, "if egal(a1,a2):\n");
+            fprintf(f, "    print('EGAL')\n");
+            fprintf(f, "else:\n");
+            fprintf(f, "    print('NON EGAL')\n");
+        }
+        fclose(f);
+        cpt++;
         } 
     ;
 expression: plus_expression;
@@ -103,7 +127,6 @@ expression_primaire:
 %%
 
 int main() {
-    yyparse();
+    yyparse();  // lit tout le fichier jusqu'à EOF
     return 0;
 }
-
