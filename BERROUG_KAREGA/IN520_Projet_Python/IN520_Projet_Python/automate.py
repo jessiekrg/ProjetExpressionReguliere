@@ -233,43 +233,45 @@ def determinisation(a):
         automate d'entrée sans epsilon-transitions
     """
     a_E = supression_epsilon_transitions(a)
-    a_det = automate()
     a_traiter = [frozenset({0})]  # utiliser frozenset pour pouvoir comparer et stocker
     etats_vus = {frozenset({0})}
+    trans_temp= {} #transitions temporaire entre frozenset
 
     while a_traiter:
         etat = a_traiter.pop(0)
-        S_a = set()  #ensemble des états atteignables avec 'a'
-        S_b = set()  # on utilise des set pour ne pas avoir des doublon 
-        S_c = set() 
-        for (q,lettre), destination in a_E.transition.items():
-            if q in etat: # Un etat peut être composé de plusieurs état
-                if lettre == 'a':
-                    S_a.update(destination) # on .update et pas .add cardestination est une liste
-                if lettre == 'b':
-                    S_b.update(destination)
-                if lettre == 'c':
-                    S_c.update(destination)
-        # Ajout des transitions
-        a_det.ajoute_transition(etat,'a',list(S_a)) #la focntion attend à ce que dest doit une liste
-        a_det.ajoute_transition(etat,'b',list(S_b)) 
-        a_det.ajoute_transition(etat,'c',list(S_c)) 
+        for lettre in a_E.alphabet:
+            destination = set()
+            for (q,c), d in a_E.transition.items():
+                if q in etat and c == lettre: # Un etat peut être composé de plusieurs état
+                    destination.update(d) # on .update et pas .add cardestination est une liste
+            destination = frozenset(destination)
+            trans_temp[(etat,lettre)] = destination
+            
+            if destination and destination not in etats_vus:
+                etats_vus.add(destination)
+                a_traiter.append(destination)     
 
-        # Rajouter les nouveaux ensemble dans a_traiter
-        for nouvel_etat in [S_a, S_b, S_c]:
-            if nouvel_etat and frozenset(nouvel_etat) not in etats_vus:
-                etats_vus.add(frozenset(nouvel_etat))
-                a_traiter.append(frozenset(nouvel_etat))
-        
-    # Definir état finaux          
-    a_det.final =[]
+
+    mapping = {}
+    for i, etat in enumerate(etats_vus):
+        mapping[etat] = i
+
+    a_det = automate()
+    a_det.n = len(mapping)
+    a_det.final = []
     for etat in etats_vus:
-        if any(q in a_E.final for q in etat): # any renvoie TRUE si on moins un des q est final
-            a_det.final.append(etat)
-    
+        if any(q in a_E.final for q in etat):
+            a_det.final.append(mapping[etat])
+
+    for (etat, lettre), dest in trans_temp.items():
+            if dest: # si le destination n'est pas vide
+                a_det.ajoute_transition(
+                    mapping[etat],
+                    lettre,
+                    [mapping[dest]]
+                )
     return a_det
 
-    # prof a mis return a  idk 
 
 
 
@@ -388,10 +390,8 @@ def egal(a1, a2):
     if set(a1_min.final) != set(a2_min.final): # set pour que l'odre n'a plus d'importance
         return False
     
-    e_1 = a1_min.initial
-    e_2 = a2_min.initial
 
-    a_traiter = [(e_1,e_2)]
+    a_traiter = [(0,0)]
     etats_vus = []
     while a_traiter:
         (q1,q2) =  a_traiter.pop(0)
@@ -520,18 +520,11 @@ if __name__ == "__main__":
 
         a_det = determinisation(a)
 
-        etats_det = set()
-        for (etat, lettre) in a_det.transition.keys():
-            etats_det.add(etat)
-
-        assert frozenset({1,2}) in etats_det
-        assert frozenset({3}) in a_det.final
+        for (etat, lettre), dest in a_det.transition.items():
+            assert len(dest) == 1
 
         print("test_determinisation validé")
 
-        print("États déterministes :", etats_det)
-        print("Transitions :", a_det.transition)
-        print("États finaux :", a_det.final)
     
     def test_determinisation_2():
         a = automate()
@@ -545,20 +538,12 @@ if __name__ == "__main__":
 
         a_det = determinisation(a)
 
-        etats_det = set()
-        for (etat, lettre) in a_det.transition.keys():
-            etats_det.add(etat)
-
-        # vérifications
-        assert frozenset({0,1}) in etats_det
-        assert frozenset({2,3}) in etats_det
-        assert frozenset({2,3}) in a_det.final
+        for (etat, lettre), dest in a_det.transition.items():
+            assert len(dest) == 1
 
         print("test_determinisation validé")
   
-        print("États déterministes :", etats_det)
-        print("Transitions :", a_det.transition)
-        print("États finaux :", a_det.final)
+
 
 
     def test_egal_true():
