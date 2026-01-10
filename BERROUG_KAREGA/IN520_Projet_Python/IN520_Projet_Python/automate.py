@@ -378,8 +378,9 @@ def egal(a1, a2):
     """ retourne True si a1 et a2 sont isomorphes
         a1 et a2 doivent être minimaux
     """
-    a1_min = minimisation(a1)
-    a2_min = minimisation(a2)
+
+    a1_min = tout_faire(a1)
+    a2_min = tout_faire(a2)
 
     # Cas de base
     if a1_min.n != a2_min.n: 
@@ -506,12 +507,117 @@ if __name__ == "__main__":
 
         print("test_union validé")
 
+    # Test determinisation
+        
+    def test_determinisation_1():
+        a = automate()
+        a.initial = 0
+        a.final = [3]
+
+        a.ajoute_transition(0, 'a', [1,2])
+        a.ajoute_transition(1, 'b', [3])
+        a.ajoute_transition(2, 'c', [3])
+
+        a_det = determinisation(a)
+
+        etats_det = set()
+        for (etat, lettre) in a_det.transition.keys():
+            etats_det.add(etat)
+
+        assert frozenset({1,2}) in etats_det
+        assert frozenset({3}) in a_det.final
+
+        print("test_determinisation validé")
+
+        print("États déterministes :", etats_det)
+        print("Transitions :", a_det.transition)
+        print("États finaux :", a_det.final)
+    
+    def test_determinisation_2():
+        a = automate()
+        a.initial = 0
+        a.final = [3]
+
+        a.ajoute_transition(0, 'a', [0,1])
+        a.ajoute_transition(1, 'a', [2,3])
+        a.ajoute_transition(0, 'b', [2])
+        a.ajoute_transition(1, 'b', [3])
+
+        a_det = determinisation(a)
+
+        etats_det = set()
+        for (etat, lettre) in a_det.transition.keys():
+            etats_det.add(etat)
+
+        # vérifications
+        assert frozenset({0,1}) in etats_det
+        assert frozenset({2,3}) in etats_det
+        assert frozenset({2,3}) in a_det.final
+
+        print("test_determinisation validé")
+  
+        print("États déterministes :", etats_det)
+        print("Transitions :", a_det.transition)
+        print("États finaux :", a_det.final)
+
+
+    def test_egal_true():
+        # Automate a1
+        a1 = automate()
+        a1.initial = 0
+        a1.final = [3]
+        a1.ajoute_transition(0, 'a', [1])
+        a1.ajoute_transition(1, 'b', [3])
+        a1.ajoute_transition(2, 'c', [3])
+        a1.ajoute_transition(3, 'c', [2])
+
+
+        a2 = automate()
+        a2.initial = 0
+        a2.final = [3]
+        a2.ajoute_transition(0, 'a', [1])
+        a2.ajoute_transition(1, 'b', [3])
+        a2.ajoute_transition(2, 'c', [3])
+        a2.ajoute_transition(3, 'c', [2])
+
+        assert egal(a1, a2) == True
+        print("test_egal_true validé")
+
+    def test_egal_false():
+        a1 = automate()
+        a1.initial = 0
+        a1.final = [2]
+        a1.ajoute_transition(0, 'a', [2])
+        a1.ajoute_transition(1, 'b', [0])
+        a1.ajoute_transition(2, 'c', [1])
+
+        a2 = automate()
+        a2.initial = 0
+        a2.final = [2]
+        a2.ajoute_transition(0, 'a', [2])
+        a2.ajoute_transition(1, 'b', [2])
+        a2.ajoute_transition(2, 'a', [1]) 
+
+        assert egal(a1, a2) == False
+        print("test_egal_false validé")
+
+
+
+
+
+    
+
 
     # Exécution des tests
     test_union()
     test_Completion()
     test_Etoile()
     test_concatenation()
+    test_determinisation_1()
+    test_determinisation_2()
+    test_egal_true()
+    test_egal_false()
+
 
 
 
